@@ -8,6 +8,8 @@ set (COMPONENT_ADD_INCLUDEDIRS
     "port/inc"
     "${AZURE_IOT_SDK}/certs"
 	"${AZURE_IOT_SDK}/c-utility/inc"
+	"${AZURE_IOT_SDK}/c-utility/deps/azure-macro-utils-c/inc"
+	"${AZURE_IOT_SDK}/c-utility/deps/umock-c/inc"
 	"${AZURE_IOT_SDK}/c-utility/pal/inc"
 	"${AZURE_IOT_SDK}/c-utility/pal/freertos"
 	"${AZURE_IOT_SDK}/c-utility/pal/generic"
@@ -32,8 +34,7 @@ set (COMPONENT_SRCS
 	"port/src/uniqueid_esp32.c"
 	"port/src/threadapi_esp32_pthreads.c"
 	"${AZURE_IOT_SDK}/certs/certs.c"
-	"${AZURE_IOT_SDK}/c-utility/adapters/httpapi_compact.c"
-	"${AZURE_IOT_SDK}/c-utility/pal/agenttime.c"
+	"${AZURE_IOT_SDK}/c-utility/pal/freertos/lock.c"
 	"${AZURE_IOT_SDK}/c-utility/pal/socket_async.c"
 	"${AZURE_IOT_SDK}/c-utility/pal/tlsio_options.c"
 	"${AZURE_IOT_SDK}/c-utility/pal/freertos/lock.c"
@@ -84,19 +85,9 @@ set (COMPONENT_SRCS
 	"${AZURE_IOT_SDK}/c-utility/src/wsio.c"
 	"${AZURE_IOT_SDK}/c-utility/src/ws_url.c"
 	"${AZURE_IOT_SDK}/c-utility/src/xio.c"
-	"${AZURE_IOT_SDK}/c-utility/src/xlogging.c"
-	#end include c-utility
-	#begin include iothub client
-	"${AZURE_IOT_SDK}/iothub_client/src/iothub_device_client.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothub_client_edge.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothub_message.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothubtransport_mqtt_common.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/uamqp_messaging.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothubtransport_amqp_messenger.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothub_module_client_ll.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothubtransport_amqp_device.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothubtransportamqp_websockets.c"
-	"${AZURE_IOT_SDK}/iothub_client/src/iothub_client_authorization.c"
+	"${AZURE_IOT_SDK}/c-utility/src/azure_base64.c"
+	"${AZURE_IOT_SDK}/iothub_client/src/iothub_device_client_ll.c"
+	"${AZURE_IOT_SDK}/iothub_client/src/iothub_client_ll.c"
 	"${AZURE_IOT_SDK}/iothub_client/src/iothub_client_core_ll.c"
 	"${AZURE_IOT_SDK}/iothub_client/src/blob.c"
 	"${AZURE_IOT_SDK}/iothub_client/src/iothubtransport_amqp_cbs_auth.c"
@@ -182,6 +173,8 @@ set (COMPONENT_SRCS
 	"${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/Memory.c"
 	"${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/tpm_socket_comm.c"
 	"${AZURE_IOT_SDK}/iothub_client/src/iothub.c"
+	"${AZURE_IOT_SDK}/c-utility/src/http_proxy_io.c"
+	"${AZURE_IOT_SDK}/c-utility/src/azure_base32.c"
 	)
 
 if (CONFIG_DEVICE_COMMON_NAME)
@@ -193,6 +186,11 @@ set (COMPONENT_SUBMODULES "${AZURE_IOT_SDK}")
 set(COMPONENT_PRIV_REQUIRES "mbedtls esp-tls lwip")
 
 register_component()
+
+set_source_files_properties(
+    ${AZURE_IOT_SDK}/iothub_client/src/iothubtransport_mqtt_common.c
+    PROPERTIES COMPILE_FLAGS
+    -Wno-maybe-uninitialized)
 
 component_compile_options (
 	-Wno-unused-function
