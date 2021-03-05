@@ -75,3 +75,24 @@ time_t sntp_get_current_timestamp()
 	localtime_r(&now, &timeinfo);
 	return now;
 }
+
+time_t get_time(time_t* currentTime)
+{
+    return sntp_get_current_timestamp();
+
+}
+
+double get_difftime(time_t stopTime, time_t startTime)
+{	
+    return (double)stopTime - (double)startTime;
+}
+
+struct tm* get_gmtime(time_t* currentTime)
+{
+    return NULL;
+}
+
+char* get_ctime(time_t* timeToGet)
+{
+    return NULL;
+}
